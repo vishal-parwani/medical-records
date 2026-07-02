@@ -15,8 +15,8 @@ Kimaya, Son). A static single-page web app storing what used to live in
   architecture, fonts, colors, and Apple Sign-In auth pattern — same author,
   same conventions.
 - **Backend:** Firestore + Firebase Auth (Apple Sign-In). Uses its **own
-  dedicated Firebase project**, separate from cards-tracker, because this is
-  sensitive health data.
+  dedicated Firebase project** (`family-medical-tracker-686ad`), separate
+  from cards-tracker, because this is sensitive health data.
 - **Access control is stricter than cards-tracker:** Firestore rules
   (`firestore.rules`) allowlist by sign-in email (Vishal + Kasthuri only),
   default-deny everything else. cards-tracker has no comparable rules file
@@ -35,7 +35,7 @@ python3 -m http.server 3456
 
 | File | Responsibility |
 |---|---|
-| `config.js` | Firebase app init; exports `auth`/`db`. Has `TODO_REPLACE` placeholders — no real Firebase project wired up yet. |
+| `config.js` | Firebase app init; exports `auth`/`db`. **Wired up to the real `family-medical-tracker-686ad` project** (2026-07-02). |
 | `auth.js` | Apple Sign-In (identical pattern to cards-tracker) |
 | `app.js` | Auth state listener, member-tab switching, modal wiring, `window.*` handlers for onclick |
 | `profile.js` | Personal Information — one Firestore doc per member, read + edit modal |
@@ -68,6 +68,14 @@ text varies slightly sheet-to-sheet. Run `--dry-run` first. See
 **Last updated:** 2026-07-02
 
 ### Recently shipped
+- 2026-07-02: **Firebase project created and wired up.** Vishal created a
+  dedicated Firebase project (`family-medical-tracker-686ad`) and pasted its
+  web app config; `js/config.js` now points at the real project instead of
+  `TODO_REPLACE` placeholders. **Still not verified live** — Firestore
+  database, Apple Sign-In provider, authorized domains, the rules deploy,
+  and the two real sign-in emails for `firestore.rules` are all still
+  pending on the Firebase-console side (see PROJECT_BRIEF.md's numbered
+  setup checklist). Don't assume sign-in works yet until those are done.
 - 2026-07-02: **Initial scaffold.** Full architecture stood up from scratch:
   `index.html`, `css/style.css` (ported from cards-tracker, trimmed of
   finance-specific chrome), `js/{config,auth,utils,profile,records,app}.js`,
@@ -77,21 +85,23 @@ text varies slightly sheet-to-sheet. Run `--dry-run` first. See
   only, Apple Sign-In to match cards-tracker. Import script's `--dry-run`
   was tested against the real `Family_Medical_Record.xlsx` and correctly
   extracted profile fields + 200+ records across the three populated member
-  sheets. **Nothing has been run in a browser** — no Firebase project exists
-  yet, so auth/CRUD/rules are all unverified live. See `PROJECT_BRIEF.md`
-  "Still open / next steps" for the concrete unblock list (create Firebase
-  project, fill in config.js + firestore.rules placeholders, run the import
-  for real, then eyeball sign-in + CRUD + that the rules actually block a
-  third account).
+  sheets.
 
 ### In progress / pending
-- Firebase project not yet created — `js/config.js` and `firestore.rules`
-  both have placeholder values that must be filled in before anything works.
+- Firestore database not confirmed created yet in the new project.
+- Apple Sign-In provider not confirmed enabled in the new project (needs
+  Apple Developer Services ID / Team ID / Key ID / private key, plus the
+  new project's authDomain added as a return URL on the Apple side).
+- Authorized domains (localhost + eventual hosting domain) not confirmed.
+- `firestore.rules` still has the two `REPLACE_WITH_..._SIGNIN_EMAIL`
+  placeholders — not deployed yet. Get the real emails by having both
+  Vishal and Kasthuri sign in once and checking Authentication → Users.
 - Cross-member search/filter/query view not built yet (brief's "retrieving
   and querying records" ask) — currently one member/one section at a time.
 - Hosting not set up (planned: GitHub Pages + custom domain, matching
   cards-tracker).
-- Real Firestore import not run (only `--dry-run`).
+- Real Firestore import not run (only `--dry-run`); needs a service account
+  key from the new project first.
 
 ### Open ideas / not started
 - Natural-language "ask questions about the records" via an LLM over the DB
