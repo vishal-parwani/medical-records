@@ -6,23 +6,18 @@ rules_version = '2';
 // cards-tracker (single-user, personal finance), access here is restricted
 // to an explicit email allowlist checked on every read/write — there is no
 // "logged in = authorized" shortcut.
-//
-// TODO before first deploy: replace the two placeholder emails below with
-// the real sign-in emails/Apple IDs for Vishal and Kasthuri. Apple Sign-In
-// may hand back a private relay address (Hide My Email) instead of the real
-// one — whichever email actually lands in the Firebase Auth user record on
-// first sign-in is the one to put here (check the Firebase Console →
-// Authentication → Users table after each person's first login).
 service cloud.firestore {
   match /databases/{database}/documents {
 
     function allowedEmails() {
       return [
-        'REPLACE_WITH_VISHAL_SIGNIN_EMAIL',
-        'REPLACE_WITH_KASTHURI_SIGNIN_EMAIL'
+        'vishal.parwani@gmail.com',
+        'kasthuri.p@gmail.com'
       ];
     }
 
+    // Firebase Auth stores/reports email addresses lowercased, so a plain
+    // equality check against these lowercase literals is safe.
     function isAllowedUser() {
       return request.auth != null
         && request.auth.token.email != null
