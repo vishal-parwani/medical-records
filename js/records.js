@@ -3,6 +3,7 @@ import {
   collection, getDocs, doc, setDoc, addDoc, deleteDoc, query, orderBy,
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 import { SECTIONS, escapeHtml } from './utils.js';
+import { invalidateSectionCache } from './search.js';
 
 // Generic list+CRUD renderer, reused for all 9 record sections (conditions,
 // medications, allergies, surgeries, vaccinations, doctors, consultations,
@@ -103,9 +104,11 @@ export async function saveRecord() {
     await addDoc(colRef, data);
   }
 
+  invalidateSectionCache(currentMemberId, sectionId);
   document.getElementById('record-modal').classList.add('hidden');
 }
 
 export async function removeRecord(sectionId, docId) {
   await deleteDoc(doc(db, 'familyMembers', currentMemberId, sectionId, docId));
+  invalidateSectionCache(currentMemberId, sectionId);
 }

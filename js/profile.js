@@ -1,6 +1,7 @@
 import { db } from './config.js';
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 import { PERSONAL_INFO_FIELDS, escapeHtml } from './utils.js';
+import { invalidateProfileCache } from './search.js';
 
 export async function loadProfile(memberId, containerEl) {
   containerEl.innerHTML = '<div class="loading">Loading...</div>';
@@ -52,6 +53,7 @@ export async function saveProfile() {
     data[el.dataset.field] = el.value.trim();
   });
   await setDoc(doc(db, 'familyMembers', memberId), data, { merge: true });
+  invalidateProfileCache(memberId);
   document.getElementById('profile-modal').classList.add('hidden');
   return memberId;
 }
