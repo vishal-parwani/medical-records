@@ -1,0 +1,49 @@
+rules_version = '2';
+
+// Family Medical Records — Firestore security rules.
+//
+// This is sensitive health data for two people (Vishal, Kasthuri). Unlike
+// cards-tracker (single-user, personal finance), access here is restricted
+// to an explicit email allowlist checked on every read/write — there is no
+// "logged in = authorized" shortcut.
+//
+// TODO before first deploy: replace the two placeholder emails below with
+// the real sign-in emails/Apple IDs for Vishal and Kasthuri. Apple Sign-In
+// may hand back a private relay address (Hide My Email) instead of the real
+// one — whichever email actually lands in the Firebase Auth user record on
+// first sign-in is the one to put here (check the Firebase Console →
+// Authentication → Users table after each person's first login).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function allowedEmails() {
+      return [
+        'REPLACE_WITH_VISHAL_SIGNIN_EMAIL',
+        'REPLACE_WITH_KASTHURI_SIGNIN_EMAIL'
+      ];
+    }
+
+    function isAllowedUser() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email in allowedEmails();
+    }
+
+    match /familyMembers/{memberId} {
+      allow read, write: if isAllowedUser();
+
+      match /{subcollection}/{docId} {
+        allow read, write: if isAllowedUser();
+      }
+    }
+
+    match /config/{docId} {
+      allow read, write: if isAllowedUser();
+    }
+
+    // Deny everything else by default (defense in depth).
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
