@@ -1,4 +1,4 @@
-import { onAuthStateChanged, getRedirectResult } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
 import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 import { auth, db } from './config.js';
 import { signInWithApple, signOut } from './auth.js';
@@ -171,12 +171,6 @@ document.getElementById('apple-signin-btn').addEventListener('click', async () =
 });
 
 document.getElementById('sign-out-btn').addEventListener('click', () => signOut());
-
-// Surfaces errors from the redirect-based sign-in flow (e.g. the Apple
-// return-URL/domain not being registered) once the browser lands back here.
-getRedirectResult(auth).catch((err) => {
-  alert(`Sign-in failed: ${err.message}`);
-});
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
