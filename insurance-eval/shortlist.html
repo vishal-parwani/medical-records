@@ -1,0 +1,612 @@
+<title>Family Health Cover — Fully-Loaded Ranking</title>
+<style>
+  :root{
+    --paper:#F6F5F1; --paper-2:#FBFAF7; --card:#FFFFFF;
+    --ink:#18211E; --ink-soft:#4A554F; --ink-faint:#77817B;
+    --line:#E4E2DA; --line-strong:#D2CFC4;
+    --accent:#0E6E5E; --accent-deep:#0A473D; --accent-wash:#E7F0ED;
+    --gold:#9A7B33; --gold-wash:#F3ECD8;
+    --good:#2E7D52; --good-wash:#E4F1E8;
+    --warn:#B07514; --warn-wash:#F6ECD8;
+    --bad:#B0453B; --bad-wash:#F6E2DE;
+    --shadow:0 1px 2px rgba(24,33,30,.05),0 8px 24px -12px rgba(24,33,30,.18);
+    --radius:14px;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0F1512; --paper-2:#121A16; --card:#161E1A;
+      --ink:#ECEEEA; --ink-soft:#AEB6B0; --ink-faint:#818A84;
+      --line:#26302B; --line-strong:#33403A;
+      --accent:#3FBBA3; --accent-deep:#8FD8CB; --accent-wash:#152722;
+      --gold:#C9A24B; --gold-wash:#2A2415;
+      --good:#5FBE8A; --good-wash:#16271E; --warn:#D8A544; --warn-wash:#2A2213;
+      --bad:#E0796E; --bad-wash:#2C1A17;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#F6F5F1; --paper-2:#FBFAF7; --card:#FFFFFF;
+    --ink:#18211E; --ink-soft:#4A554F; --ink-faint:#77817B;
+    --line:#E4E2DA; --line-strong:#D2CFC4;
+    --accent:#0E6E5E; --accent-deep:#0A473D; --accent-wash:#E7F0ED;
+    --gold:#9A7B33; --gold-wash:#F3ECD8;
+    --good:#2E7D52; --good-wash:#E4F1E8; --warn:#B07514; --warn-wash:#F6ECD8;
+    --bad:#B0453B; --bad-wash:#F6E2DE;
+    --shadow:0 1px 2px rgba(24,33,30,.05),0 8px 24px -12px rgba(24,33,30,.18);
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1512; --paper-2:#121A16; --card:#161E1A;
+    --ink:#ECEEEA; --ink-soft:#AEB6B0; --ink-faint:#818A84;
+    --line:#26302B; --line-strong:#33403A;
+    --accent:#3FBBA3; --accent-deep:#8FD8CB; --accent-wash:#152722;
+    --gold:#C9A24B; --gold-wash:#2A2415;
+    --good:#5FBE8A; --good-wash:#16271E; --warn:#D8A544; --warn-wash:#2A2213;
+    --bad:#E0796E; --bad-wash:#2C1A17;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0}
+  .wrap{background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.55; -webkit-font-smoothing:antialiased; padding:clamp(18px,4vw,56px)}
+  .page{max-width:1080px; margin:0 auto}
+  .col{max-width:70ch}
+  h1,h2,h3{font-family:var(--serif); font-weight:600; text-wrap:balance; line-height:1.12; margin:0}
+  p{margin:0}
+  a{color:var(--accent); text-underline-offset:2px}
+  .eyebrow{font-family:var(--sans); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:700}
+  .muted{color:var(--ink-soft)} .faint{color:var(--ink-faint)}
+  .mono{font-family:var(--mono)} .tnum{font-variant-numeric:tabular-nums}
+
+  header.masthead{border-bottom:2px solid var(--ink); padding-bottom:22px; margin-bottom:12px}
+  .kicker-row{display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:14px}
+  h1{font-size:clamp(2rem,5.2vw,3.3rem); letter-spacing:-.01em}
+  .dek{font-family:var(--serif); font-style:italic; font-size:clamp(1.05rem,2.2vw,1.3rem); color:var(--ink-soft); margin-top:14px; max-width:64ch}
+  .profile{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px}
+  .chip{display:inline-flex; align-items:center; gap:6px; background:var(--card); border:1px solid var(--line-strong); border-radius:999px; padding:5px 12px; font-size:.82rem; color:var(--ink-soft)}
+  .chip b{color:var(--ink); font-weight:600}
+
+  section{margin-top:44px}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:18px; border-bottom:1px solid var(--line); padding-bottom:10px}
+  .sec-head .n{font-family:var(--serif); font-size:.95rem; color:var(--accent); font-weight:700; font-variant-numeric:tabular-nums}
+  h2{font-size:clamp(1.3rem,3vw,1.7rem)}
+  .lead{font-size:1.02rem; color:var(--ink-soft); margin-top:10px}
+
+  .note{background:var(--accent-wash); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent); border-radius:var(--radius); padding:16px 18px; font-size:.92rem}
+  .note.warn{background:var(--warn-wash); border-color:color-mix(in srgb,var(--warn) 35%,transparent)}
+  .note b{color:var(--ink)}
+
+  .riderbar{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px}
+  .rider{display:inline-flex; align-items:center; gap:7px; background:var(--card); border:1px solid var(--line-strong); border-radius:10px; padding:8px 12px; font-size:.85rem}
+  .rider b{color:var(--ink)} .rider .c{font-variant-numeric:tabular-nums; color:var(--accent); font-weight:600}
+
+  .scroll{overflow-x:auto; border:1px solid var(--line-strong); border-radius:var(--radius); box-shadow:var(--shadow); background:var(--card)}
+  table{border-collapse:collapse; width:100%; font-size:.84rem; min-width:820px}
+  th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line)}
+  thead th{position:sticky; top:0; background:var(--card); z-index:2; border-bottom:2px solid var(--line-strong); font-family:var(--sans); font-size:.74rem; letter-spacing:.03em; vertical-align:bottom}
+  thead th .pi{display:block; font-size:.64rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; font-weight:600}
+  thead th .pn{font-family:var(--serif); font-size:.92rem; font-weight:600; color:var(--ink)}
+  tbody th{position:sticky; left:0; background:var(--card); z-index:1; font-weight:600; font-size:.8rem; color:var(--ink); border-right:1px solid var(--line-strong); min-width:180px}
+  tbody th small{display:block; font-weight:400; color:var(--ink-faint); font-size:.72rem}
+  td.c{white-space:nowrap}
+  .mk{display:inline-flex; align-items:center; gap:5px; font-weight:600; font-size:.8rem}
+  .mk::before{content:""; width:8px; height:8px; border-radius:2px; flex:0 0 auto}
+  .mk.y{color:var(--good)} .mk.y::before{background:var(--good)}
+  .mk.p{color:var(--warn)} .mk.p::before{background:var(--warn)}
+  .mk.n{color:var(--bad)}  .mk.n::before{background:var(--bad)}
+  td small{display:block; color:var(--ink-faint); font-size:.72rem; font-weight:400; white-space:normal}
+  tr.alt th, tr.alt td{background:var(--paper-2)}
+  tr.lead th, tr.lead td{background:color-mix(in srgb,var(--gold-wash) 45%,transparent)}
+  col.altcol{background:color-mix(in srgb,var(--gold-wash) 40%,transparent)}
+  .loaded{font-family:var(--serif); font-weight:700; font-variant-numeric:tabular-nums; color:var(--ink)}
+  .rk{font-family:var(--serif); font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums}
+  .legend{display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; font-size:.8rem; color:var(--ink-soft)}
+  .legend .mk{font-size:.78rem}
+
+  .cards{display:grid; gap:16px; margin-top:22px}
+  .rankcard{position:relative; background:var(--card); border:1px solid var(--line-strong); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px 22px; display:grid; grid-template-columns:auto 1fr; gap:18px}
+  .rankcard.top{border-color:var(--accent)}
+  .rankcard.win{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold),var(--shadow)}
+  .rank{font-family:var(--serif); font-size:2.1rem; font-weight:600; color:var(--accent); line-height:1; width:2.2ch; text-align:center; font-variant-numeric:tabular-nums}
+  .rankcard.win .rank{color:var(--gold)}
+  .rankcard .body{min-width:0}
+  .rc-top{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap}
+  .plan-name{font-family:var(--serif); font-size:1.28rem; font-weight:600}
+  .plan-insurer{font-size:.8rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.08em; margin-bottom:2px}
+  .bestfor{display:inline-block; background:var(--gold-wash); color:var(--gold); border:1px solid color-mix(in srgb,var(--gold) 35%,transparent); font-size:.74rem; font-weight:700; letter-spacing:.04em; padding:3px 10px; border-radius:999px; margin-top:8px; text-transform:uppercase}
+  .price{text-align:right; white-space:nowrap}
+  .price .amt{font-family:var(--serif); font-size:1.15rem; font-weight:600; font-variant-numeric:tabular-nums}
+  .price .lbl{font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint)}
+  .price .grounded{color:var(--good)}
+  .price .base{font-size:.74rem; color:var(--ink-faint); font-variant-numeric:tabular-nums}
+  .rc-chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:14px}
+  .tag{font-size:.76rem; padding:3px 9px; border-radius:6px; background:var(--paper-2); border:1px solid var(--line); color:var(--ink-soft)}
+  .tag.g{background:var(--good-wash); border-color:color-mix(in srgb,var(--good) 30%,transparent); color:var(--good)}
+  .tag.w{background:var(--warn-wash); border-color:color-mix(in srgb,var(--warn) 30%,transparent); color:var(--warn)}
+  .rc-lines{margin-top:14px; display:grid; gap:7px; font-size:.9rem}
+  .rc-lines .li{display:grid; grid-template-columns:82px 1fr; gap:10px}
+  .rc-lines .li .k{font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); padding-top:2px}
+  .rc-lines .li .v b{color:var(--ink)}
+  .rc-lines .li.watch .k{color:var(--warn)}
+
+  .deep{display:grid; gap:14px; margin-top:16px}
+  details.plan{background:var(--card); border:1px solid var(--line-strong); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+  details.plan>summary{list-style:none; cursor:pointer; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; gap:14px}
+  details.plan>summary::-webkit-details-marker{display:none}
+  details.plan>summary:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+  .sumL{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+  .sumL .r{font-family:var(--serif); color:var(--accent); font-weight:700}
+  .sumL .nm{font-family:var(--serif); font-size:1.1rem; font-weight:600}
+  .sumL .ins{font-size:.74rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint)}
+  .chev{color:var(--ink-faint); transition:transform .2s}
+  details.plan[open] .chev{transform:rotate(90deg)}
+  .plan-body{padding:4px 20px 20px; border-top:1px solid var(--line)}
+  .grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px 26px; margin-top:14px}
+  .field .k{font-size:.7rem; text-transform:uppercase; letter-spacing:.07em; color:var(--accent); font-weight:700; margin-bottom:2px}
+  .field .v{font-size:.9rem}
+  .field .v b{color:var(--ink)}
+  .uin{font-family:var(--mono); font-size:.72rem; color:var(--ink-faint)}
+  .verdict{margin-top:16px; padding:12px 14px; background:var(--paper-2); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; font-size:.9rem}
+  .verdict b{color:var(--ink)}
+
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .opt{background:var(--card); border:1px solid var(--line-strong); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow)}
+  .opt h3{font-size:1.05rem; margin-bottom:4px}
+  .opt .sub{font-size:.78rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px}
+  .opt ul{margin:0; padding-left:18px; font-size:.9rem; color:var(--ink-soft); display:grid; gap:6px}
+  .opt.pick{border-color:var(--accent)}
+  .pill{display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:2px 9px; border-radius:999px; background:var(--accent-wash); color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 30%,transparent); margin-left:8px}
+
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:12px}
+  ol.steps li{counter-increment:s; display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:start; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px; font-size:.92rem}
+  ol.steps li::before{content:counter(s); font-family:var(--serif); font-weight:600; color:var(--accent); background:var(--accent-wash); width:30px; height:30px; border-radius:50%; display:grid; place-items:center; font-size:.95rem}
+  ol.steps li b{color:var(--ink)}
+
+  footer{margin-top:52px; padding-top:22px; border-top:2px solid var(--ink); font-size:.82rem; color:var(--ink-soft)}
+  footer h3{font-size:1rem; margin-bottom:8px}
+  footer ul{padding-left:18px; display:grid; gap:5px; margin:6px 0 0}
+
+  @media (max-width:640px){
+    .rankcard{grid-template-columns:auto 1fr; gap:12px; padding:16px}
+    .rank{font-size:1.6rem}
+    .two{grid-template-columns:1fr}
+    .rc-lines .li{grid-template-columns:70px 1fr}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap"><div class="page">
+
+  <header class="masthead">
+    <div class="kicker-row">
+      <span class="eyebrow">Private family brief · Health cover</span>
+      <span class="faint mono" style="font-size:.75rem">Updated 4 Jul 2026 · v4 · riders priced in</span>
+    </div>
+    <h1>Re-ranked, riders and all</h1>
+    <p class="dek">The order changes once you pay for what you actually need. Plans that bake in OPD, dental, consumables and a short waiting clock leap ahead; the premium brands cost more than they first look.</p>
+    <div class="profile">
+      <span class="chip"><b>Family floater</b> · ₹1 crore</span>
+      <span class="chip">2 adults <b>44 · 43</b></span>
+      <span class="chip">2 children <b>14 · 9</b></span>
+      <span class="chip">Base <b>Chennai</b></span>
+      <span class="chip">No maternity</span>
+    </div>
+  </header>
+
+  <div class="note" style="margin-top:26px">
+    <b>The riders I priced in for you</b> — inferred from your checklist and priorities. Everything is added on top of a ₹1 crore floater that already clears the non-negotiables (no room cap, 0 co-pay, no deductible, no sub-limits).
+    <div class="riderbar">
+      <span class="rider"><b>Consumables</b> <span class="c">₹3k–6k</span></span>
+      <span class="rider"><b>OPD + routine dental</b> <span class="c">₹10k–20k</span></span>
+      <span class="rider"><b>PED-wait reduction</b> <span class="c">~10–15% of base</span></span>
+      <span class="rider"><b>Room upgrade</b> <span class="c">₹3k–6k</span> <span class="faint">where needed</span></span>
+    </div>
+  </div>
+
+  <!-- ================= FULLY-LOADED RANKING ================= -->
+  <section>
+    <div class="sec-head"><span class="n">01</span><h2>The cost stack — and the new order</h2></div>
+    <p class="lead col">Each plan taken to the <em>same</em> comprehensive spec you want. "Bare base" is the ₹1cr floater alone; "fully-loaded" adds the riders it still needs to get there. All figures are annual, Chennai, and <b>modelled estimates</b> (rider pricing is quote-engine-only) — except Tata's base, which is off its official chart. The <b>logic</b> — who needs fewer riders — is the robust takeaway; the exact rupees need live quotes.</p>
+
+    <div class="scroll" style="margin-top:16px">
+      <table>
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th>Bare base <small>₹1cr</small></th>
+            <th>Riders still needed</th>
+            <th>Rider cost <small>est.</small></th>
+            <th>Fully-loaded <small>₹/yr</small></th>
+            <th>Complete?</th>
+            <th>New rank</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="lead"><th>Tata AIG <small>Medicare Premier</small></th>
+            <td class="c tnum">≈ ₹60.5k <small>firm</small></td>
+            <td><span class="mk y">None</span><small>OPD, dental, consumables built-in · PED already 24mo</small></td>
+            <td class="c tnum">₹0</td>
+            <td class="c"><span class="loaded">₹60–61k</span></td>
+            <td class="c"><span class="mk y">Full</span></td>
+            <td class="c"><span class="rk">1</span> <small>was 4</small></td></tr>
+
+          <tr><th>ManipalCigna <small>ProHealth Prime</small></th>
+            <td class="c tnum">₹36–48k</td>
+            <td><span class="mk p">Room upgrade</span><small>Prime Plus (OPD/dental/consumables already built-in)</small></td>
+            <td class="c tnum">₹3–6k</td>
+            <td class="c"><span class="loaded">₹48–58k</span></td>
+            <td class="c"><span class="mk y">Full</span></td>
+            <td class="c"><span class="rk">2</span> <small>was 5</small></td></tr>
+
+          <tr><th>HDFC Ergo <small>Optima Secure</small></th>
+            <td class="c tnum">₹45–68k</td>
+            <td><span class="mk n">OPD + dental</span> <span class="mk n">PED rider</span><small>consumables built-in</small></td>
+            <td class="c tnum">₹12–25k</td>
+            <td class="c"><span class="loaded">₹66–90k</span></td>
+            <td class="c"><span class="mk y">Full</span></td>
+            <td class="c"><span class="rk">3</span> <small>was 1</small></td></tr>
+
+          <tr><th>ICICI Lombard <small>Elevate</small></th>
+            <td class="c tnum">₹45–75k</td>
+            <td><span class="mk n">OPD+/dental</span> <span class="mk n">consumables</span> <span class="mk n">PED</span></td>
+            <td class="c tnum">₹18–32k</td>
+            <td class="c"><span class="loaded">₹78–100k+</span></td>
+            <td class="c"><span class="mk y">Full</span></td>
+            <td class="c"><span class="rk">4</span> <small>was 3</small></td></tr>
+
+          <tr><th>Niva Bupa <small>ReAssure 2.0</small></th>
+            <td class="c tnum">₹40–62k</td>
+            <td><span class="mk n">OPD/dental</span> <span class="mk n">consumables</span> <span class="mk n">PED-removal</span></td>
+            <td class="c tnum">₹15–30k</td>
+            <td class="c"><span class="loaded">₹68–92k</span></td>
+            <td class="c"><span class="mk y">Full</span><small>+ removable PED</small></td>
+            <td class="c"><span class="rk">5</span> <small>was 2</small></td></tr>
+
+          <tr><th>Care Health <small>Care Supreme</small></th>
+            <td class="c tnum">₹35–52k</td>
+            <td><span class="mk n">consumables</span> <span class="mk n">PED</span> · <span class="mk n">no true OPD</span></td>
+            <td class="c tnum">₹6–12k</td>
+            <td class="c"><span class="loaded">₹51–64k</span></td>
+            <td class="c"><span class="mk n">OPD/dental gap</span></td>
+            <td class="c"><span class="rk">6</span> <small>was 6</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span class="mk y">Built-in / done</span><span class="mk p">Small top-up</span><span class="mk n">Paid rider needed</span>
+      <span class="faint">· highlighted row = best fully-loaded value ·</span>
+    </div>
+
+    <div class="note" style="margin-top:18px"><b>What moved, and why.</b> <b>Tata jumps to #1</b> and <b>ManipalCigna to #2</b> because they already include OPD, dental and consumables and carry a 24-month PED — so "fully loaded" is barely more than base. <b>HDFC slips to #3</b>: still the most reliable insurer, but reaching your spec means paying for the OPD/dental and PED riders it lacks, pushing its true cost to ₹66–90k. <b>ICICI Elevate (#4)</b> is the most expensive once fully kitted — you're paying for its top-tier OPD+ ecosystem and solvency. <b>ReAssure 2.0 drops to #5</b>: its removable-PED rider is still unique and valuable, but it's rider-heavy <em>and</em> has the weakest claims record. <b>Care stays #6</b> — cheapest, but it can't actually deliver the OPD/dental you want, so it never reaches the same spec.</div>
+  </section>
+
+  <!-- ================= THE VERDICT ================= -->
+  <section>
+    <div class="sec-head"><span class="n">02</span><h2>The call</h2></div>
+    <div class="note" style="border-color:color-mix(in srgb,var(--gold) 40%,transparent); background:var(--gold-wash)">
+      <b>Cost is no barrier · least friction wins.</b> The ranking numbers below were built on <em>value</em> (fewer riders = cheaper) — useful history, but not your deciding factor any more. With money off the table and every rider available on every plan, the call is: <b>buy HDFC Ergo Optima Secure as a single ₹1–2cr base, fully loaded</b> (Unlimited Restore + Optima Wellbeing OPD/dental + PED-reduction) — near-maximal coverage <em>and</em> the market's <b>least claim-time friction</b> (best settlement, best value-payout, fewest complaints), which is the friction that actually hurts when you're in hospital. <b>Choose Tata Medicare Premier instead</b> if you'd rather have the shortest waiting clock applied to <em>every</em> one of your conditions with nothing bolted on (24-mo PED, all in-built) — the lowest <em>waiting-period</em> friction. <b>Niva ReAssure 2.0</b> is the only one that can <em>remove</em> the PED wait entirely, but it has the busiest claims desk — so it trades waiting-friction for claim-desk-friction. My lead pick for you: <b>HDFC.</b>
+    </div>
+
+    <div class="cards">
+
+      <article class="rankcard win">
+        <div class="rank">1</div>
+        <div class="body">
+          <div class="rc-top"><div>
+            <div class="plan-insurer">Tata AIG</div><div class="plan-name">Medicare Premier</div>
+            <span class="bestfor">Best fully-loaded value + reliability</span>
+          </div><div class="price"><div class="amt grounded">≈ ₹60–61k</div><div class="lbl">fully-loaded · ₹1cr</div><div class="base">base ≈ ₹60.5k · riders ₹0</div></div></div>
+          <div class="rc-chips">
+            <span class="tag g">OPD + ₹10k dental built-in</span><span class="tag g">Consumables built-in</span>
+            <span class="tag g">PED 24 months (all conditions)</span><span class="tag g">No room cap</span><span class="tag g">~9.8 complaints/10k</span>
+          </div>
+          <div class="rc-lines">
+            <div class="li"><span class="k">Why #1 now</span><span class="v">Needs <b>no riders</b> to reach your spec — the one plan where "fully loaded" ≈ base. Its 24-month PED helps every condition (not just lifestyle ones), and it's the only <b>firm price</b> here.</span></div>
+            <div class="li watch"><span class="k">Watch</span><span class="v">Built-in OPD is modest (₹5k after yr 2); if you want a richer OPD limit, add a top-up — but even then it stays competitive. Lower headline CSR (~86.6%) offset by low complaints.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="rankcard top">
+        <div class="rank">2</div>
+        <div class="body">
+          <div class="rc-top"><div>
+            <div class="plan-insurer">ManipalCigna</div><div class="plan-name">ProHealth Prime — Advantage + Prime&nbsp;Plus</div>
+            <span class="bestfor">Cheapest complete package</span>
+          </div><div class="price"><div class="amt">₹48–58k</div><div class="lbl">fully-loaded · ₹1cr</div><div class="base">base ₹36–48k + room upgrade</div></div></div>
+          <div class="rc-chips">
+            <span class="tag g">OPD + dental + AYUSH-OPD built-in</span><span class="tag g">Consumables built-in</span>
+            <span class="tag g">PED 24 months</span><span class="tag g">Chennai = cheaper Zone II</span>
+          </div>
+          <div class="rc-lines">
+            <div class="li"><span class="k">Why #2</span><span class="v"><b>Richest built-in outpatient benefit</b> of any plan here, plus consumables and a 24-month PED — so only the Prime Plus room upgrade stands between base and your full spec. Likely the <b>lowest fully-loaded cost</b>.</span></div>
+            <div class="li watch"><span class="k">Watch</span><span class="v">Complaints ~23/10k (higher than Tata/HDFC); base bonus only 25% without the booster add-on.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="rankcard top">
+        <div class="rank">3</div>
+        <div class="body">
+          <div class="rc-top"><div>
+            <div class="plan-insurer">HDFC Ergo</div><div class="plan-name">Optima Secure</div>
+            <span class="bestfor">Most reliable — if you'll pay up</span>
+          </div><div class="price"><div class="amt">₹66–90k</div><div class="lbl">fully-loaded · ₹1cr</div><div class="base">base ₹45–68k + OPD/dental + PED</div></div></div>
+          <div class="rc-chips">
+            <span class="tag g">Strongest claims record</span><span class="tag g">Consumables + 2× built-in</span>
+            <span class="tag w">OPD + dental = paid add-on</span><span class="tag w">PED rider needed</span>
+          </div>
+          <div class="rc-lines">
+            <div class="li"><span class="k">Why #3</span><span class="v">Still the <b>steadiest insurer</b> (generous by value, fewest disputes), but your spec means buying the OPD/dental and PED riders it doesn't include — which lifts its true cost above the value leaders.</span></div>
+            <div class="li watch"><span class="k">Watch</span><span class="v">The ABCD PED rider only helps lifestyle conditions and is permanent once added; the OPD/dental add-on is what closes its biggest gap for your household.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="rankcard">
+        <div class="rank">4</div>
+        <div class="body">
+          <div class="rc-top"><div>
+            <div class="plan-insurer">ICICI Lombard</div><div class="plan-name">Elevate</div>
+            <span class="bestfor">Best features — priciest loaded</span>
+          </div><div class="price"><div class="amt">₹78–100k+</div><div class="lbl">fully-loaded · ₹1cr</div><div class="base">base ₹45–75k + 3 riders</div></div></div>
+          <div class="rc-chips">
+            <span class="tag g">Best OPD+ (dental/vision)</span><span class="tag g">Solvency 2.69× · low disputes</span>
+            <span class="tag w">Consumables + OPD + PED all add-on</span>
+          </div>
+          <div class="rc-lines">
+            <div class="li"><span class="k">Why #4</span><span class="v">Elite cover and the best financial-strength/low-dispute record — but its best bits are all <b>riders</b>, so fully-kitted it's the <b>most expensive</b> here. Worth it only if that top-tier OPD+ ecosystem is the deciding factor.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="rankcard">
+        <div class="rank">5</div>
+        <div class="body">
+          <div class="rc-top"><div>
+            <div class="plan-insurer">Niva Bupa</div><div class="plan-name">ReAssure 2.0 — Titanium+</div>
+            <span class="bestfor">Unique removable PED — but rider-heavy</span>
+          </div><div class="price"><div class="amt">₹68–92k</div><div class="lbl">fully-loaded · ₹1cr</div><div class="base">base ₹40–62k + 3 riders</div></div></div>
+          <div class="rc-chips">
+            <span class="tag g">Fully removable PED wait</span><span class="tag g">Unlimited restoration</span>
+            <span class="tag w">Busiest claims desk (~43/10k)</span>
+          </div>
+          <div class="rc-lines">
+            <div class="li"><span class="k">Why #5</span><span class="v">The removable-PED rider is still its killer feature and could vault it up <em>if</em> your quote shows meaningful PED loadings elsewhere — but it's rider-heavy and carries the weakest claims record of the six.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="rankcard">
+        <div class="rank">6</div>
+        <div class="body">
+          <div class="rc-top"><div>
+            <div class="plan-insurer">Care Health</div><div class="plan-name">Care Supreme</div>
+            <span class="bestfor">Cheapest — but can't meet your spec</span>
+          </div><div class="price"><div class="amt">₹51–64k</div><div class="lbl">fully-loaded · ₹1cr</div><div class="base">no true OPD/dental available</div></div></div>
+          <div class="rc-chips">
+            <span class="tag g">Lowest base premium</span><span class="tag w">No real OPD/dental</span><span class="tag w">Low ICR · high rejections</span>
+          </div>
+          <div class="rc-lines">
+            <div class="li"><span class="k">Why #6</span><span class="v">Still the cheapest clean ₹1cr contract, but it offers only OPD <em>discounts</em>, not cover — so it never reaches the spec you asked for. Combined with the denial-side caveats, it's a value play only if you'd <b>drop the OPD/dental requirement</b>.</span></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ================= SCORECARD ================= -->
+  <section>
+    <div class="sec-head"><span class="n">03</span><h2>Full feature scorecard</h2></div>
+    <p class="lead col">Columns are in the new fully-loaded rank order. Last column (shaded) is the strong alternate. Scroll sideways for the full grid.</p>
+    <div class="scroll" style="margin-top:16px">
+      <table>
+        <colgroup><col/><col/><col/><col/><col/><col/><col/><col class="altcol"/></colgroup>
+        <thead>
+          <tr>
+            <th>Criterion</th>
+            <th><span class="pi">1 · Tata AIG</span><span class="pn">Medicare Premier</span></th>
+            <th><span class="pi">2 · ManipalCigna</span><span class="pn">ProHealth Prime</span></th>
+            <th><span class="pi">3 · HDFC Ergo</span><span class="pn">Optima Secure</span></th>
+            <th><span class="pi">4 · ICICI</span><span class="pn">Elevate</span></th>
+            <th><span class="pi">5 · Niva Bupa</span><span class="pn">ReAssure 2.0</span></th>
+            <th><span class="pi">6 · Care</span><span class="pn">Care Supreme</span></th>
+            <th><span class="pi">alt · ABHI</span><span class="pn">Activ One</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th>Fully-loaded ₹/yr <small>modelled</small></th>
+            <td class="c tnum"><span class="loaded">₹60–61k</span></td><td class="c tnum"><span class="loaded">₹48–58k</span></td><td class="c tnum"><span class="loaded">₹66–90k</span></td><td class="c tnum"><span class="loaded">₹78–100k</span></td><td class="c tnum"><span class="loaded">₹68–92k</span></td><td class="c tnum"><span class="loaded">₹51–64k</span></td><td class="c tnum">₹55–80k</td></tr>
+          <tr class="alt"><th>Riders needed for your spec</th>
+            <td class="c"><span class="mk y">None</span></td><td class="c"><span class="mk p">Room only</span></td><td class="c"><span class="mk n">OPD/dental + PED</span></td><td class="c"><span class="mk n">3 riders</span></td><td class="c"><span class="mk n">3 riders</span></td><td class="c"><span class="mk n">2 + OPD gap</span></td><td class="c"><span class="mk n">OPD/dental + more</span></td></tr>
+          <tr><th>No room-rent cap <small>incl. suite</small></th>
+            <td class="c"><span class="mk y">Full</span></td><td class="c"><span class="mk y">Via Prime Plus</span></td><td class="c"><span class="mk y">At actuals</span></td><td class="c"><span class="mk y">Full</span></td><td class="c"><span class="mk y">Full</span></td><td class="c"><span class="mk y">Full</span></td><td class="c"><span class="mk y">Full</span></td></tr>
+          <tr class="alt"><th>Built-in OPD <small>your priority</small></th>
+            <td class="c"><span class="mk p">₹5k + dental</span></td><td class="c"><span class="mk y">Full + dental + AYUSH</span></td><td class="c"><span class="mk n">Add-on</span></td><td class="c"><span class="mk p">Strong add-on</span></td><td class="c"><span class="mk n">Add-on</span></td><td class="c"><span class="mk n">Discounts only</span></td><td class="c"><span class="mk n">Add-on</span></td></tr>
+          <tr><th>Routine / OPD dental</th>
+            <td class="c"><span class="mk y">₹10k built-in</span></td><td class="c"><span class="mk y">Built-in</span></td><td class="c"><span class="mk n">Add-on</span></td><td class="c"><span class="mk p">Via OPD+</span></td><td class="c"><span class="mk n">Add-on</span></td><td class="c"><span class="mk n">In-patient only</span></td><td class="c"><span class="mk n">Add-on</span></td></tr>
+          <tr class="alt"><th>Consumables built-in</th>
+            <td class="c"><span class="mk y">Yes</span></td><td class="c"><span class="mk y">Yes</span></td><td class="c"><span class="mk y">Yes</span></td><td class="c"><span class="mk p">Add-on</span></td><td class="c"><span class="mk p">Add-on</span></td><td class="c"><span class="mk p">Add-on</span></td><td class="c"><span class="mk y">Yes</span></td></tr>
+          <tr><th>PED wait &amp; flexibility</th>
+            <td class="c"><span class="mk y">24mo base</span></td><td class="c"><span class="mk y">24mo</span></td><td class="c"><span class="mk p">36mo → rider</span></td><td class="c"><span class="mk p">36mo → 30d</span></td><td class="c"><span class="mk y">Removable</span></td><td class="c"><span class="mk p">36mo → day-31</span></td><td class="c"><span class="mk p">36mo → day-1×7</span></td></tr>
+          <tr class="alt"><th>Restoration</th>
+            <td class="c"><span class="mk y">Partial · 3×</span></td><td class="c"><span class="mk y">Unlimited</span></td><td class="c"><span class="mk p">Once/yr</span></td><td class="c"><span class="mk y">Unlimited reset</span></td><td class="c"><span class="mk y">Unlimited · 1st</span></td><td class="c"><span class="mk y">Unlimited</span></td><td class="c"><span class="mk y">Unlimited</span></td></tr>
+          <tr><th>No-claim bonus</th>
+            <td class="c"><span class="mk p">50%→100%</span></td><td class="c"><span class="mk p">25% → 800%*</span></td><td class="c"><span class="mk y">+100% claim-proof</span></td><td class="c"><span class="mk y">+100%/yr</span></td><td class="c"><span class="mk y">Carry-fwd 10×</span></td><td class="c"><span class="mk p">50%→100%</span></td><td class="c"><span class="mk y">+100%→500%</span></td></tr>
+          <tr class="alt"><th>Claims reliability</th>
+            <td class="c"><span class="mk y">Few complaints</span></td><td class="c"><span class="mk p">Middle</span></td><td class="c"><span class="mk y">Strongest</span></td><td class="c"><span class="mk y">Low disputes</span></td><td class="c"><span class="mk n">Busiest disputes</span></td><td class="c"><span class="mk n">Low ICR · rejections</span></td><td class="c"><span class="mk p">Solid</span></td></tr>
+          <tr><th>Maternity not force-bundled</th>
+            <td class="c"><span class="mk p">Tiny bundled</span></td><td class="c"><span class="mk y">Optional</span></td><td class="c"><span class="mk y">Optional</span></td><td class="c"><span class="mk y">Add-on</span></td><td class="c"><span class="mk y">Optional</span></td><td class="c"><span class="mk y">Excluded</span></td><td class="c"><span class="mk y">Separate</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span class="mk y">Meets target</span><span class="mk p">Partial / conditional</span><span class="mk n">Falls short / paid rider</span>
+      <span class="faint">· *via add-on · verify against the CIS before buying</span>
+    </div>
+  </section>
+
+  <!-- ================= CLAIMS RELIABILITY ================= -->
+  <section>
+    <div class="sec-head"><span class="n">04</span><h2>Will they actually pay? — denial record</h2></div>
+    <p class="lead col">Unchanged by rider pricing, and still decisive: settlement ratio flatters (it counts small claims); the honest read is value-payout (ICR) + complaints + ombudsman rejections together.</p>
+    <div class="scroll" style="margin-top:16px">
+      <table>
+        <thead>
+          <tr><th>Insurer <small>(rank)</small></th><th>CSR <small>count</small></th><th>ICR <small>paid ÷ premium</small></th><th>Complaints <small>/10k</small></th><th>Ombudsman rejections</th><th>Read</th></tr>
+        </thead>
+        <tbody>
+          <tr class="lead"><th>Tata AIG <small>#1</small></th><td class="c tnum"><span class="mk p">~86.6%</span></td><td class="c tnum"><span class="mk p">~mid</span></td><td class="c tnum"><span class="mk y">~9.8</span></td><td class="c tnum"><span class="mk y">Low</span></td><td>Modest headline, smooth experience.</td></tr>
+          <tr><th>ManipalCigna <small>#2</small></th><td class="c tnum"><span class="mk p">~93.7%</span></td><td class="c tnum"><span class="mk y">~74.8%</span></td><td class="c tnum"><span class="mk p">~23</span></td><td class="c tnum"><span class="mk p">Moderate</span></td><td>Middle of pack; best of the value tier.</td></tr>
+          <tr><th>HDFC Ergo <small>#3</small></th><td class="c tnum"><span class="mk y">~96.7–97.4%</span></td><td class="c tnum"><span class="mk y">~79–85%</span></td><td class="c tnum"><span class="mk y">~9–15</span></td><td class="c tnum"><span class="mk y">Low</span></td><td><b>Strongest overall</b> — the reason to pay up.</td></tr>
+          <tr><th>ICICI Lombard <small>#4</small></th><td class="c tnum"><span class="mk p">~84.5–97%</span></td><td class="c tnum"><span class="mk y">~82%</span></td><td class="c tnum"><span class="mk y">~9–14</span></td><td class="c tnum"><span class="mk y">Low</span></td><td>Pays well, few disputes, best solvency.</td></tr>
+          <tr><th>Niva Bupa <small>#5</small></th><td class="c tnum"><span class="mk p">~92.4%</span></td><td class="c tnum"><span class="mk p">~61%</span></td><td class="c tnum"><span class="mk n">~43</span></td><td class="c tnum"><span class="mk n">~1,770</span></td><td>Richest features, busiest disputes.</td></tr>
+          <tr><th>Care Health <small>#6</small></th><td class="c tnum"><span class="mk y">~96.7%</span></td><td class="c tnum"><span class="mk n">~64.5%</span></td><td class="c tnum"><span class="mk n">~42</span></td><td class="c tnum"><span class="mk n">~2,393</span></td><td>Shiny CSR, weaker underneath.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note warn" style="margin-top:16px"><b>Still true:</b> IRDAI has 8 majors under enforcement review (June 2025) over rejections/deductions — so the wording protects you, not the brand — and the ombudsman upholds <b>~71%</b> of complaints for policyholders. Disclose everything; keep paperwork.</div>
+  </section>
+
+  <!-- ================= DEEP DIVES ================= -->
+  <section>
+    <div class="sec-head"><span class="n">05</span><h2>The detail, plan by plan</h2></div>
+    <div class="deep">
+
+      <details class="plan" open>
+        <summary><span class="sumL"><span class="r">1</span><span class="nm">Medicare Premier</span><span class="ins">Tata AIG</span></span><span class="chev">›</span></summary>
+        <div class="plan-body">
+          <span class="uin">UIN TATHLIP24159V042324 · verified from brochure + CIS; premium off official zone chart</span>
+          <div class="grid2">
+            <div class="field"><div class="k">Why it wins fully-loaded</div><div class="v"><b>OPD + ₹10k dental + consumables all built-in</b>, and PED is already 24mo — so no riders are needed to hit your spec.</div></div>
+            <div class="field"><div class="k">Room / restoration</div><div class="v">No room cap, no proportionate deduction; auto-restore on partial trigger, up to 3×.</div></div>
+            <div class="field"><div class="k">Price</div><div class="v"><b>≈ ₹60.5k/yr</b> at ₹1cr incl GST (Chennai Zone B); ₹50L ≈ ₹43k. The only firm number here.</div></div>
+            <div class="field"><div class="k">Reliability</div><div class="v">CSR ~86.6% (below avg) but only ~9.8 complaints/10k; Kauvery in its Chennai network.</div></div>
+          </div>
+          <div class="verdict"><b>Take:</b> the value + reliability winner once riders are priced in. Optionally top up the OPD limit if your outpatient spend is high.</div>
+        </div>
+      </details>
+
+      <details class="plan">
+        <summary><span class="sumL"><span class="r">2</span><span class="nm">ProHealth Prime — Advantage + Prime Plus</span><span class="ins">ManipalCigna</span></span><span class="chev">›</span></summary>
+        <div class="plan-body">
+          <span class="uin">UIN MCIHLIP26036V022526 · verified from primary policy wording</span>
+          <div class="grid2">
+            <div class="field"><div class="k">Built-in outpatient</div><div class="v"><b>Richest OPD here</b> — cashless consults, diagnostics, drugs, <b>dental and AYUSH-OPD</b>, waiting/co-pay waived. Consumables also built-in.</div></div>
+            <div class="field"><div class="k">Only rider needed</div><div class="v"><b>Prime Plus</b> for any-room + day-1 surplus (~₹3–6k). PED already 24mo at ₹1cr.</div></div>
+            <div class="field"><div class="k">Zone</div><div class="v">Chennai = Zone II → cheaper, no co-pay for local treatment.</div></div>
+            <div class="field"><div class="k">Reliability</div><div class="v">CSR ~93.7%, complaints ~23/10k — best of the value tier.</div></div>
+          </div>
+          <div class="verdict"><b>Take:</b> the cheapest way to a genuinely complete package; take it over Tata if the richer built-in OPD matters more than Tata's lower complaints.</div>
+        </div>
+      </details>
+
+      <details class="plan">
+        <summary><span class="sumL"><span class="r">3</span><span class="nm">Optima Secure</span><span class="ins">HDFC Ergo</span></span><span class="chev">›</span></summary>
+        <div class="plan-body">
+          <span class="uin">UIN HDFHLIP25011V052425 · verified from primary policy wording</span>
+          <div class="grid2">
+            <div class="field"><div class="k">Built-in strengths</div><div class="v">No room cap; <b>consumables + 2× cover + claim-proof +100% bonus</b> all built-in; steadiest claims desk (ICR ~79–85%, ~9–15 complaints).</div></div>
+            <div class="field"><div class="k">Riders you must add</div><div class="v"><b>OPD + dental</b> (Optima Wellbeing) and a <b>PED-reduction</b> rider — ₹12–25k that lifts the true cost to ₹66–90k.</div></div>
+            <div class="field"><div class="k">Dental on base</div><div class="v">Only accident/disease in-patient dental; routine dental needs the OPD add-on.</div></div>
+          </div>
+          <div class="verdict"><b>Take:</b> no longer the value pick, but the reliability pick — buy it if a spotless claims record is worth ~₹10–25k/yr more than Tata/ManipalCigna.</div>
+        </div>
+      </details>
+
+      <details class="plan">
+        <summary><span class="sumL"><span class="r">4</span><span class="nm">Elevate</span><span class="ins">ICICI Lombard</span></span><span class="chev">›</span></summary>
+        <div class="plan-body">
+          <span class="uin">cross-checked (insurer/aggregator fetch blocked)</span>
+          <div class="grid2">
+            <div class="field"><div class="k">Strengths</div><div class="v">Unlimited reset, no sub-limits, <b>best OPD+ ecosystem</b> (dental/vision app), <b>solvency 2.69×</b>, low disputes.</div></div>
+            <div class="field"><div class="k">Why priciest loaded</div><div class="v">OPD+, consumables (Claim Protector) and PED (Jumpstart, 30-day floor) are <b>all riders</b> — ₹18–32k on top.</div></div>
+          </div>
+          <div class="verdict"><b>Take:</b> the choice if its top-tier OPD+ and financial strength outweigh being the most expensive fully-kitted.</div>
+        </div>
+      </details>
+
+      <details class="plan">
+        <summary><span class="sumL"><span class="r">5</span><span class="nm">ReAssure 2.0 — Titanium+</span><span class="ins">Niva Bupa</span></span><span class="chev">›</span></summary>
+        <div class="plan-body">
+          <span class="uin">UIN NBHHLIP26042V022526 · cross-checked</span>
+          <div class="grid2">
+            <div class="field"><div class="k">Killer feature</div><div class="v"><b>Option to fully remove the PED waiting period</b> + unlimited restoration from the 1st claim.</div></div>
+            <div class="field"><div class="k">Why it drops</div><div class="v">Rider-heavy (OPD, Safeguard consumables, PED-removal) <b>and</b> the weakest claims record (complaints ~43/10k, ~1,770 ombudsman rejections).</div></div>
+          </div>
+          <div class="verdict"><b>Take:</b> reconsider it up the list only if your live quote shows heavy PED loadings that its removable-PED rider would erase.</div>
+        </div>
+      </details>
+
+      <details class="plan">
+        <summary><span class="sumL"><span class="r">6</span><span class="nm">Care Supreme</span><span class="ins">Care Health</span></span><span class="chev">›</span></summary>
+        <div class="plan-body">
+          <span class="uin">UIN CHIHLIP27061V032627 · verified from primary policy wording</span>
+          <div class="grid2">
+            <div class="field"><div class="k">Strength</div><div class="v">Cheapest clean ₹1cr contract — no room cap, no sub-limits, unlimited recharge (same + different illness).</div></div>
+            <div class="field"><div class="k">Why last</div><div class="v"><b>No true OPD/dental</b> (discounts only), so it can't meet your spec; plus low ICR (~64.5%) and high rejection disputes.</div></div>
+          </div>
+          <div class="verdict"><b>Take:</b> only if you'd drop the OPD/dental requirement and buy purely on price.</div>
+        </div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- ================= STRATEGY ================= -->
+  <section>
+    <div class="sec-head"><span class="n">06</span><h2>How to structure the ₹1 crore</h2></div>
+    <p class="lead col">With premium no barrier and least friction the goal, this is now clear-cut.</p>
+    <div class="two" style="margin-top:16px">
+      <div class="opt pick">
+        <div class="sub">Recommended · least friction</div>
+        <h3>One single ₹1 crore base <span class="pill">go ₹2cr if offered</span></h3>
+        <ul>
+          <li><b>One policy, one claim desk, one renewal</b> — nothing to coordinate when someone's in hospital.</li>
+          <li><b>No deductible mechanics</b> — a super top-up only pays after its deductible is exhausted, which invites disputes about whether/when that happened.</li>
+          <li>Bonus, restoration and OPD apply to the <b>whole ₹1cr</b>, not fragmented across two layers.</li>
+          <li>Since cost is off the table, size up to <b>₹2cr / infinite SI</b> for headroom against ~11.5% medical inflation.</li>
+        </ul>
+      </div>
+      <div class="opt">
+        <div class="sub">Only if cost mattered</div>
+        <h3>₹50L base + ₹50L super top-up</h3>
+        <ul>
+          <li>Saves ~30–40% of premium — its <b>only</b> advantage, now irrelevant to you.</li>
+          <li>Adds friction: two policies, a deductible layer, split benefits. The opposite of your goal.</li>
+          <li><b>Skip it.</b></li>
+        </ul>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px"><b>Cost is no barrier · least friction is the goal.</b> That reframes the whole shortlist: the value case that lifted Tata &amp; ManipalCigna (fewer riders = cheaper) no longer decides it. What decides it now is the friction table above — buy every rider you want on <em>any</em> plan, and choose on claims-desk reliability + waiting-period exposure + how much is in-built. See "The call" below.</div>
+  </section>
+
+  <!-- ================= NEXT STEPS ================= -->
+  <section>
+    <div class="sec-head"><span class="n">07</span><h2>Before you sign</h2></div>
+    <ol class="steps" style="margin-top:8px">
+      <li><b>Pull live quotes with riders included</b> for Tata, ManipalCigna (+Prime Plus) and HDFC (+Optima Wellbeing +PED rider) at ₹1cr, Chennai PIN, exact DOBs — so you compare <em>fully-loaded</em> totals, not base premiums. My rider figures are modelled; the quotes settle it.</li>
+      <li><b>Declare every condition in writing</b> for all four members — non-disclosure is the top reason claims are voided, and full disclosure starts the 60-month moratorium clock.</li>
+      <li><b>Confirm on the CIS:</b> no proportionate deduction on associated charges, suite not re-capped, and the exact OPD/dental &amp; PED-rider costs (the numbers that decide this).</li>
+      <li><b>Verify Apollo / Kauvery / MIOT / SIMS</b> are in-network on each insurer's own locator, with Cashless Everywhere live.</li>
+      <li><b>Decide the OPD limit you actually want</b> — a bigger OPD rider raises HDFC/ICICI/Niva further and widens Tata/ManipalCigna's value lead.</li>
+      <li><b>Use the 30-day free-look</b> to read the wording end-to-end; return for a full refund if anything contradicts the sales promise.</li>
+    </ol>
+  </section>
+
+  <footer>
+    <h3>Sourcing &amp; honest caveats</h3>
+    <ul>
+      <li><b>Rider costs are modelled estimates</b> (OPD/dental/PED rider pricing is quote-engine-only, not published). The ranking <em>logic</em> — who bakes in what, so who needs the fewest riders — is robust; the exact rupees need live quotes. Anchors: HDFC Optima Wellbeing, Care OPD rider, Niva add-on quotes (scaled up for your family), and the ~10–15% PED-reduction loading rule.</li>
+      <li><b>Base premiums are estimates</b> except Tata's (official zone chart).</li>
+      <li><b>Reliability</b> figures vary by basis; weight complaints/ombudsman over CSR.</li>
+      <li><b>Per-condition underwriting</b> isn't published — disclose fully and get a pre-underwriting view.</li>
+      <li><b>Your medical records were used privately</b> to weight this and were not reproduced here or written to your public repository.</li>
+    </ul>
+    <p class="faint" style="margin-top:14px">Advisory synthesis for family decision-making — not a substitute for the binding policy wording or a licensed advisor's sign-off.</p>
+  </footer>
+
+</div></div>
